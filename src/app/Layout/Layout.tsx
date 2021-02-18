@@ -1,6 +1,6 @@
 import LayoutContext from '@/context/layout';
 import React, {
-  FC, useState, useMemo, useCallback,
+  FC, useState, useMemo, useCallback, useEffect,
 } from 'react';
 import {
   useHistory, useLocation,
@@ -17,9 +17,13 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 
 import Drawer from '@material-ui/core/Drawer';
+import TronContext, { tronWeb } from '@/context/tron';
+import config from '@/constants/config';
 import useStyles from './styles';
 
 const Layout: FC = ({ children }) => {
+  const [contract, setContract] = useState<unknown>(null);
+
   // hooks route
   const history = useHistory();
   const { pathname } = useLocation();
@@ -45,60 +49,67 @@ const Layout: FC = ({ children }) => {
   // constants
   const path = pathname.split('/')[1];
 
+  useEffect(() => {
+    getContract();
+  }, []);
+
   // component
   return (
     <LayoutContext.Provider value={{
       fullScreen, setFullScreen, open, setOpen,
     }}
     >
-      {path !== 'sign-in' ? (
-        <>
-          <Drawer
-            variant="permanent"
-            className={clsx(classes.drawer, {
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-              [classes.drawerCollapse]: fullScreen,
-              [classes.scrollBar]: true,
-            })}
-            classes={{
-              paper: clsx(classes.drawerPaper, {
+      <TronContext.Provider value={{ tronWeb, contract }}>
+        {path !== 'sign-in' ? (
+          <>
+            <Drawer
+              variant="permanent"
+              className={clsx(classes.drawer, {
                 [classes.drawerOpen]: open,
                 [classes.drawerClose]: !open,
                 [classes.drawerCollapse]: fullScreen,
-              }),
-            }}
-          >
-            <List>
-              <ListItem button onClick={callbackRoute('/screener')} alignItems="center" className={classes.titleWrap}>
-                <Typography variant="h6" className={classes.title}>
-                  APP
-                </Typography>
-              </ListItem>
-            </List>
-            <div className={classes.toolbar}>
-              <IconButtonUI
-                onClick={callbackDrawer}
-                color="inherit"
-                className={classes.menuButton}
-              >
-                <MenuIcon />
-              </IconButtonUI>
-            </div>
-          </Drawer>
-          <main className={clsx({
-            [classes.main]: !open,
-            [classes.mainOpen]: open,
-            [classes.scrollBar]: true,
-          })}
-          >
-            {children}
-          </main>
-          <footer />
-        </>
-      ) : (
-        <main className={classes.mainAuth}>{ children }</main>
-      )}
+                [classes.scrollBar]: true,
+              })}
+              classes={{
+                paper: clsx(classes.drawerPaper, {
+                  [classes.drawerOpen]: open,
+                  [classes.drawerClose]: !open,
+                  [classes.drawerCollapse]: fullScreen,
+                }),
+              }}
+            >
+              <List>
+                <ListItem button onClick={callbackRoute('/screener')} alignItems="center" className={classes.titleWrap}>
+                  <Typography variant="h6" className={classes.title}>
+                    APP
+                  </Typography>
+                </ListItem>
+              </List>
+              <div className={classes.toolbar}>
+                <IconButtonUI
+                  onClick={callbackDrawer}
+                  color="inherit"
+                  className={classes.menuButton}
+                >
+                  <MenuIcon />
+                </IconButtonUI>
+              </div>
+            </Drawer>
+            <main className={clsx({
+              [classes.main]: !open,
+              [classes.mainOpen]: open,
+              [classes.scrollBar]: true,
+            })}
+            >
+              {children}
+            </main>
+            <footer />
+          </>
+        ) : (
+          <main className={classes.mainAuth}>{ children }</main>
+        )}
+      </TronContext.Provider>
+
     </LayoutContext.Provider>
   );
 
@@ -110,6 +121,10 @@ const Layout: FC = ({ children }) => {
     return () => {
       history.push(route);
     };
+  }
+
+  async function getContract() {
+    setContract(await tronWeb.contract().at(config.hex));
   }
 };
 

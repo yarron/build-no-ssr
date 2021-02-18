@@ -1,0 +1,26 @@
+type Notification {
+  message: String!
+  type: NotificationE!
+  status: Boolean!
+  id: ID!
+}
+
+enum NotificationE {
+  error
+  success
+}
+
+type NotifyMutationResponse {
+  message: String!
+  id: ID
+}
+
+extend type Query {
+  notifications: [Notification]!
+}
+
+extend type Mutation {
+  addNotification(message: String!, type: NotificationE!, status: Boolean!): NotifyMutationResponse!
+  editNotification(id: ID!, status: Boolean!): NotifyMutationResponse!
+  deleteNotification(id: ID!): NotifyMutationResponse!
+}

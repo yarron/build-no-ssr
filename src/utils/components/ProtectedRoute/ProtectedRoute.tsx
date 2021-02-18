@@ -17,7 +17,7 @@ const ProtectedRoute: FC<RouteProps & { component: ComponentType }> = ({ compone
     //       throw new Error();
     //     } else if (location.pathname === ROUTES.HOME) {
     //       history.replace('/screener', location);
-    //     } else if (!dataCache.getAuth.email) {
+    //     } else if (!dataCache.auth.email) {
     //       addAuth({ variables: { email: payload.email, groups: payload['cognito:groups'] } });
     //     }
     //   })

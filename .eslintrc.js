@@ -26,6 +26,14 @@ module.exports = {
         'import/prefer-default-export': 'off',
       },
     },
+    {
+      files: ['src/graphql/types/*.ts'],
+      rules: {
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        'no-multiple-empty-lines': 'off',
+      },
+    },
   ],
 
   rules: {

@@ -1,0 +1,39 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+type AuthMutationResponse {
+  message: String!
+}
+
+type Auth {
+  email: String!
+  groups: [String]!
+}
+
+type Query {
+  auth: Auth!
+  notifications: [Notification]!
+}
+
+type Mutation {
+  addAuth(email: String!, groups: [String]!): AuthMutationResponse
+  addNotification(message: String!, type: NotificationE!, status: Boolean!): NotifyMutationResponse!
+  deleteNotification(id: ID!): NotifyMutationResponse!
+  editNotification(id: ID!, status: Boolean!): NotifyMutationResponse!
+}
+
+type Notification {
+  message: String!
+  type: NotificationE!
+  status: Boolean!
+  id: ID!
+}
+
+enum NotificationE {
+  error
+  success
+}
+
+type NotifyMutationResponse {
+  message: String!
+  id: ID
+}

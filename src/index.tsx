@@ -8,19 +8,23 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 import App from '@/app';
 import theme from '@/theme';
+import { ApolloClient, ApolloProvider } from '@apollo/client';
 import reportWebVitals from './reportWebVitals';
+import client from './graphql';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <HelmetProvider>
-            <App />
-          </HelmetProvider>
-        </MuiPickersUtilsProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ApolloProvider client={client as ApolloClient<unknown>}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <HelmetProvider>
+              <App />
+            </HelmetProvider>
+          </MuiPickersUtilsProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

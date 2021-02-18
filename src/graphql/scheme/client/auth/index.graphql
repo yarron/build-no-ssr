@@ -1,0 +1,16 @@
+type AuthMutationResponse {
+  message: String!
+}
+
+type Auth {
+  email: String!
+  groups: [String]!
+}
+
+extend type Query {
+  auth: Auth!
+}
+
+extend type Mutation {
+  addAuth(email: String!, groups: [String]!): AuthMutationResponse
+}
